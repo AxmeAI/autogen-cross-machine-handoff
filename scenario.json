@@ -1,0 +1,38 @@
+{
+  "scenario": "autogen-cross-machine-analysis",
+  "description": "AutoGen agents on different machines coordinate via AXME: analysis -> processing -> human approval",
+  "agents": [
+    {
+      "agent_uri": "agent://analyzer",
+      "name": "Analyzer",
+      "description": "AutoGen agent that analyzes data using multi-agent conversation",
+      "capabilities": ["analyze_data"]
+    },
+    {
+      "agent_uri": "agent://processor",
+      "name": "Processor",
+      "description": "AutoGen agent that processes analysis results and requests human approval",
+      "capabilities": ["process_analysis"]
+    }
+  ],
+  "workflow": {
+    "steps": [
+      {
+        "intent_type": "analyze_data",
+        "to_agent": "agent://analyzer",
+        "description": "Analyze data using AutoGen multi-agent conversation"
+      },
+      {
+        "intent_type": "process_analysis",
+        "to_agent": "agent://processor",
+        "description": "Process analysis results and request human approval",
+        "requires_human_approval": true
+      }
+    ]
+  },
+  "timeouts": {
+    "analyze_data": "10m",
+    "process_analysis": "10m",
+    "human_approval": "7d"
+  }
+}
