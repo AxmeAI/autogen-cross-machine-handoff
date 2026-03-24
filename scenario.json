@@ -1,38 +1,33 @@
 {
-  "scenario": "autogen-cross-machine-analysis",
-  "description": "AutoGen agents on different machines coordinate via AXME: analysis -> processing -> human approval",
+  "scenario_id": "autogen-cross-machine.demo.v1",
+  "title": "AutoGen cross-machine handoff",
+  "description": "AutoGen analyzer agent processes data via AXME durable delivery.",
   "agents": [
     {
-      "agent_uri": "agent://analyzer",
-      "name": "Analyzer",
-      "description": "AutoGen agent that analyzes data using multi-agent conversation",
-      "capabilities": ["analyze_data"]
-    },
-    {
-      "agent_uri": "agent://processor",
-      "name": "Processor",
-      "description": "AutoGen agent that processes analysis results and requests human approval",
-      "capabilities": ["process_analysis"]
+      "role": "analyzer",
+      "address": "autogen-analyzer-demo",
+      "display_name": "AutoGen Analyzer Agent",
+      "delivery_mode": "stream",
+      "create_if_missing": true
     }
   ],
   "workflow": {
     "steps": [
       {
-        "intent_type": "analyze_data",
-        "to_agent": "agent://analyzer",
-        "description": "Analyze data using AutoGen multi-agent conversation"
-      },
-      {
-        "intent_type": "process_analysis",
-        "to_agent": "agent://processor",
-        "description": "Process analysis results and request human approval",
-        "requires_human_approval": true
+        "step_id": "analyze_data",
+        "tool_id": "tool.agent.task.v1",
+        "assigned_to": "analyzer",
+        "step_deadline_seconds": 120
       }
     ]
   },
-  "timeouts": {
-    "analyze_data": "10m",
-    "process_analysis": "10m",
-    "human_approval": "7d"
+  "intent": {
+    "type": "intent.autogen.analyze.v1",
+    "payload": {
+      "dataset": "quarterly_sales_2026_q1",
+      "analysis_type": "trend_detection",
+      "output_format": "summary"
+    },
+    "max_delivery_attempts": 3
   }
 }
